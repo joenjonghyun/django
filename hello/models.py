@@ -1,85 +1,4 @@
 import random
-
-
-def main():
-    while 1 :
-        menu =(input('0.나가기 1.계산기 2.체지방측정기 3.성적표 4.자동성적표 5.주사위 6.RandomGenerator 7.랜덤초이스 8.가위바위보 9.'))
-        if menu == '0':
-            break
-        elif menu =='1': #계산기
-            num1 = int(input('첫번째 수'))
-            num2 = int(input('두번째 수'))
-            opcode = (input('연산기호'))
-            #객체생성
-            calc = Qu1z01Calculator(num1,opcode,num2)
-            print('*'*30)
-            if opcode == '+' : result = (f'{calc.num1} + {calc.num2} = {calc.add()}')
-            elif opcode == '-' : result = (f'{calc.num1} - {calc.num2} = {calc.sub()}')
-            elif opcode == '*' : result = (f'{calc.num1} * {calc.num2} = {calc.mul()}')
-            elif opcode == '/' : result = (f'{calc.num1} / {calc.num2} = {calc.div()}')
-            print(result)
-
-        elif menu == '2' : #BMI
-            name = (input('이름'))
-            height = int(input('키'))
-            weight = int(input('몸무게'))
-            bmi = Quiz02Bmi(name,height,weight)
-            print(bmi.get_bmi())
-
-        elif menu == '3': #성적표
-            name = (input('이름'))
-            kr = int(input('국어점수'))
-            en = int(input('영어점수'))
-            math = int(input('수학점수'))
-            grade = Quiz03Grade(name, kr, en, math)
-            result = (f'국어 : {grade.kr}점 영어 : {grade.en}점  수학 : {grade.math}점 \n 합계 : {grade.sum()} \n 평균 : {grade.avg()} 합격여부 : {grade.passing()}')
-            print(f'{name}의 점수 {result} ')
-
-        elif menu == '4': #자동성적표
-            for i in ['김유신', '강감찬', '유관순', '윤봉길', '신사임당']:
-                print(i)
-            kr = int(input('국어점수 : '))
-            en = int(input('영어점수 : '))
-            math = int(input('수학점수 : '))
-            #grade = Quiz04GradeAuto(name,kr, en, math)
-            #print(f'{name}의 국어{kr} 영어{en} 수학{math} 합계{grade.sum()} 평균{grade.avg()}')
-
-        elif menu == '5': #주사위
-           print(f'주사위 던지기\n{Quiz05Dice.cast()}')
-
-        elif menu =='6':
-            pass
-
-        elif menu == '7':
-            q7 = Quiz07RandomChoice()
-            print(q7.chooseMember())
-
-        elif menu =='8':
-            q8 = Quiz08Rps(int(input('숫자입력')))
-            print(q8.game())
-
-        elif menu =='9':
-            pass
-
-        elif menu =='10':
-            q10 = Quiz10LeapYear(int(input('년도입력')))
-            res = (q10.get_LeapYear())
-
-        elif menu =='11':
-            pass
-
-        elif menu =='12':
-            pass
-
-        elif menu =='13':
-            pass
-
-        elif menu =='14':
-            pass
-
-
-
-
 class Qu1z01Calculator:
     def __init__(self, num1,opcode, num2):
         self.num1 = num1
@@ -96,12 +15,10 @@ class Qu1z01Calculator:
         return self.num1 / self.num2
 
 class Quiz02Bmi:
-    def __init__(self, name, height, weight):
-        self.name = name
-        self.height = height
-        self.weight = weight
-    def getBmi(self):
-        bmires = self.weight/(self.height*self.height)*10000
+    @staticmethod
+    def getBmi(member):
+        this = member
+        bmires = this.weight/(this.height*this.height)*10000
         if bmires > 25:
             return f'비만'
         elif bmires > 23:
@@ -163,37 +80,26 @@ class Quiz07RandomChoice(object):
         return self.members[myRandom(0,23)]
         #리턴사용의 이유는 리엑트로 보내주라는 소리임
 
-class Quiz08Rps(object): #1가위2바위3보
-    def __init__(self, player):
-        self.player = player
-        self.computer = myRandom(1,3)
-
+class Quiz08Rps(object):
     def game(self):
-        c = self.computer
-        p = self.player
-        rps = ['가위', '바위', '보']
-        if p == 1:
-            if c == 1:
-                res = f'플레이어 :{rps[1]} , 컴퓨터 :{rps[1]}, 결과 : 무승부'
-            elif c == 2:
-                res = f'플레이어 :{rps[1]} , 컴퓨터 :{rps[2]}, 결과 : 패배'
-            elif c == 3 :
-                res = f'플레이어 :{rps[1]} , 컴퓨터 :{rps[3]}, 결과 : 승리'
-        if p == 2:
-            if c == 1:
-                res = f'플레이어 :{rps[2]} , 컴퓨터 :{rps[1]}, 결과 : 승리'
-            elif c == 2:
-                res = f'플레이어 :{rps[2]} , 컴퓨터 :{rps[2]}, 결과 : 무승부'
-            elif c == 3:
-                res = f'플레이어 :{rps[2]} , 컴퓨터 :{rps[3]}, 결과 : 패배'
-        if p == 3:
-            if c == 1:
-                res = f'플레이어 :{rps[3]} , 컴퓨터 :{rps[1]}, 결과 : 패배'
-            elif c == 2:
-                res = f'플레이어 :{rps[3]} , 컴퓨터 :{rps[2]}, 결과 : 승리'
-            elif c == 3:
-                res = f'플레이어 :{rps[3]} , 컴퓨터 :{rps[3]}, 결과 : 무승부'
-            return res
+        c = myRandom(0,2)
+        p = int(input('0가위,1바위,2보'))
+        if c-p == -1 or c-p == 2:
+            print(f'플레이어 : {p} 승리 \n 컴퓨터 {c} : 패배')
+        elif c-p == 1 or c-p == -2:
+            print(f'플레이어 : {p} 패배 \n 컴퓨터 {c} : 승리')
+        else:
+            print('무승부')
+
+        '''
+           <게이머 승리일때>
+            컴퓨터0(가위) / 게이머1(바위)(win) = -1
+            컴퓨터1(바위) / 게이머2(보)(win) = -1
+            컴퓨터2(보) / 게이머0(가위)(win) = 2
+           <컴퓨터 승리일때>
+            컴퓨터0(가위) / 게이머2(보)(lose) = -2
+            컴퓨터1(바위) / 게이머0(가위)(lose) = 1
+            컴퓨터2(보) / 게이머1(바위)(lose) = 1 '''
 
 
 class Quiz09GetPrime(object):
@@ -204,7 +110,7 @@ class Quiz10LeapYear(object):
     def __init__(self, year):
         self.year = year
     def get_LeapYear(self):
-        if self.year % 4 == 0 & self.year % 100 != 0 | self.year % 400 ==0:
+        if self.year % 4 == 0 & self.year % 100 != 0 | self.year % 400 == 0:
             return '윤년'
         else:
             return '평년'
@@ -226,8 +132,6 @@ class Quiz14Gugudan(object):
     def __init__(self):
         pass
 
-if __name__ == '__main__':
-    main()
 
 
 
