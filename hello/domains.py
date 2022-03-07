@@ -28,6 +28,7 @@ class Member:
 
 
 def myRandom(start, end): return random.randint(start, end)
+def myMember(): return random.choice(members())
 
 
 def my100(): return myRandom(1, 100)
