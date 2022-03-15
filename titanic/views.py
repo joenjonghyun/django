@@ -1,6 +1,7 @@
-from titanic.domains import Dataset
-from titanic.models import Model
-class View:
+from context.domains import Dataset
+from context.models import Model
+
+class TitanicView:
     model = Model()
     dataset = Dataset()
 
@@ -9,12 +10,12 @@ class View:
 
 
     def preprocess(self, train, test) -> object:
-        model = self.model
-        this = self.dataset
-        this.train = model.new_model(train)
-        this.test = model.new_model(test)
+        self.model = Model()
+        self.dataset = Dataset()
+        self.train = self.model.new_model(train)
+        self.test = self.model.new_model(test)
         # id 추출
-        print(f'트레인 컬럼{this.train.columns}')
-        print(f'트레인 헤드{this.train.head()}')
+        print(f'트레인 컬럼{self.train.columns}')
+        print(f'트레인 헤드{self.test.head()}')
 
 

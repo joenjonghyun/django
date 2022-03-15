@@ -21,7 +21,7 @@ if __name__ == '__main__':
         elif menu == '03': q0.quiz03rps()
         elif menu == '04': q0.quiz04leap()
         elif menu == '05': q0.quiz05grade()
-        elif menu == '06': q0.quiz06memberChoice()
+        elif menu == '06': q0.quiz06member_Choice()
         elif menu == '07': q0.quiz07lotto()
         elif menu == '08': q0.quiz08bank()
         elif menu == '09': q0.quiz09gugudan()

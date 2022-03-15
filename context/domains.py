@@ -6,6 +6,7 @@ from dataclasses import dataclass
 @dataclass
 class Dataset:
     context: str
+    sname : str
     fname: str
     train: str
     test: str
@@ -16,6 +17,12 @@ class Dataset:
     def context(self) -> str: return self._context
     @context.setter
     def context(self, context): self._context = context
+
+    @property
+    def sname(self) -> str: return self._sname
+
+    @sname.setter
+    def sname(self, sname): self._sname = sname
 
     @property
     def fname(self) -> str: return self._fname

@@ -4,8 +4,9 @@ import string
 import numpy as np
 import pandas as pd
 from icecream import ic
-from titanic.models import Model
-from hello.domains import myRandom, myMember, members
+
+from context.models import Model
+from hello.domains import members
 
 
 class Quiz30:
@@ -90,20 +91,31 @@ class Quiz30:
 
 
     def quiz33_df_loc(self) -> str:
-        df = self.createDf(keys=['a', 'b', 'c', 'd'],
+        ''' df = self.createDf(keys=['a', 'b', 'c', 'd'],
                            vals=np.random.randint(0, 100, 4),
-                           len=3)
-        #ic(df)
+                           len=3) '''
+        # ic(df)
         # a = [{i: j for i, j in zip(['a', 'b', 'c', 'd'], np.random.randint(0, 101, 4))}for i in range(3)]
         # print(a)
         # https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.loc.html
-        # grade.csv
-        #df2 = pd.DataFrame(np.random.randint(0, 101, (24, 4)), index=members(), columns=['자', '파', '자.스', 'SQL'])
+        # grade_backup.csv
+        df2 = pd.DataFrame(np.random.randint(0, 101, (24, 4)), index=members(), columns=['자바', '파이썬', '자바스크립트', 'SQL'])
         #ic(df2)
-        #df2.to_csv('./save/grade.csv', sep=',', na_rep='NaN')
+        #df2.to_csv('./save/grade_backup.csv', sep=',', na_rep='NaN')
         model = Model()
         grade_df = model.new_model('grade_backup.csv')
-        ic(grade_df)
+        #ic(grade_df)
+        print('Q1.파이썬의 점수만 출력하시오')
+        python_scores = grade_df.loc[:, '파이썬']
+        ic(python_scores)
+        print('Q2.조현국의 점수만 출력하시오')
+        cho_scores = grade_df.loc['조현국']
+        ic(type(cho_scores))
+        ic(cho_scores)
+        print('Q3.조현국의 과목별 점수를 출력하세요')
+        cho_subject_score = grade_df.loc[['조현국']]
+        ic(cho_subject_score)
+
 
 
 
