@@ -14,56 +14,61 @@ class TitanicModel(object):
         ic(f'트레인 컬럼{self.train.columns}')
         ic(f'트레인 헤드{self.train.head()}')
         ic(self.train)
+
     def preprocess(self):
-        self.sib_sp_garbage()
-        self.parch_garbage()
-        self.ticket_garbage()
-        self.cabin_garbage()
-        self.creat_label()
-        self.creat_train()
-        self.name_nominal()
-        self.pclass_ordinal()
-        self.age_ratio()
-        self.sex_nominal()
-        self.embarked_nominal()
-        self.fare_ratio()
+        df = self.train
 
+        df = self.drop_feature(df)
+        df = self.creat_label(df)
+        df = self.creat_train(df)
+        df = self.name_nominal(df)
+        df = self.pclass_ordinal(df)
+        df = self.age_ratio(df)
+        df = self.sex_nominal(df)
+        df = self.embarked_nominal(df)
+        df = self.fare_ratio(df)
 
-    def creat_label(self) -> object:
-        pass
+    @staticmethod
+    def creat_label(df) -> object:
+        return df
 
-    def creat_train(self) -> object:
-        pass
+    @staticmethod
+    def creat_train(df) -> object:
+        return df
 
-    def drop_feature(self) -> object:
-        pass
+    def drop_feature(self, df) -> object:
+        self.sib_sp_garbage(df)
+        self.parch_garbage(df)
+        self.ticket_garbage(df)
+        self.cabin_garbage(df)
+        return df
 
-    def pclass_ordinal(self) -> object:
-        pass
+    '''
+       Categorical vs. Quantitative
+       Cate -> nominal (이름) vs. ordinal (순서)
+       Quan -> interval (상대) vs. ratio (절대)
+    '''
 
-    def name_nominal(self) -> object:
-        pass
+    @staticmethod
+    def pclass_ordinal(df) -> object:
+        return df
 
-    def age_ratio(self) -> object:
-        pass
+    @staticmethod
+    def name_nominal(df) -> object:
+        return df
 
-    def sib_sp_garbage(self) -> object:
-        self.drop_feature()
+    @staticmethod
+    def age_ratio(df) -> object:
+        return df
 
-    def parch_garbage(self) -> object:
-        self.drop_feature()
+    @staticmethod
+    def sex_nominal(df) -> object:
+        return df
 
-    def ticket_garbage(self) -> object:
-        self.drop_feature()
+    @staticmethod
+    def embarked_nominal(df) -> object:
+        return df
 
-    def sex_nominal(self) -> object:
-        pass
-
-    def cabin_garbage(self) -> object:
-        self.drop_feature()
-
-    def embarked_nominal(self) -> object:
-        pass
-
-    def fare_ratio(self) -> object:
-        pass
+    @staticmethod
+    def fare_ratio(df) -> object:
+        return df
