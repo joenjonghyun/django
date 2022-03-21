@@ -4,6 +4,9 @@ from icecream import ic
 
 from context.domains import Dataset
 from context.models import Model
+from sklearn.model_selection import KFold
+from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier
 
 
 class TitanicModel(object):
@@ -31,6 +34,11 @@ class TitanicModel(object):
         this = self.sex_nominal(this)
         this = self.drop_feature(this, 'Sex')
         this = self.embarked_nominal(this)
+        this = self.age_ratio(this)
+        this = self.drop_feature(this, 'Age')
+        this = self.pclass_ordinal(this)
+        this = self.fare_ratio(this)
+        this = self.drop_feature(this, 'Fare')
 
         #this = self.name_nominal(this)
         '''
@@ -46,7 +54,10 @@ class TitanicModel(object):
         '''
 
         #self.print_this(this)
-        self.df_info(this)
+        #self.df_info(this)
+        k_fold = self.create_k_fold()
+        accuracy = self.get_accuracy(this, k_fold)
+        ic(accuracy)
         return this
 
     '''@staticmethod
@@ -63,6 +74,22 @@ class TitanicModel(object):
         ic(f'9. id 의 타입: {type(this.id)}\n')
         ic(f'10. id 의 상위 10개: {this.id[: 10]}\n')
         print('*' * 100)'''
+
+
+    def learning(self, train_fname, test_fname): #model은 기계어(ML)로 되어있고 이것을 머신러닝이라부름
+        this = self.preprocess(train_fname, test_fname)
+        self.df_info(this)
+        k_fold = self.create_k_fold()
+        ic(f'사이킷런 알고리즘정확도: {self.get_accuracy(this, k_fold)}')
+        self.submit(this)
+
+    @staticmethod
+    def submit(this): #런닝의 결과가 서브밋임
+        clf = RandomForestClassifier()
+        clf.fit(this.train, this.label) #fit은 훈련시키다 라는 뜻
+        prediction = clf.predict(this.test)
+        pd.DataFrame({'PassengerId': this.id, 'Survived': prediction}).to_csv('./save/submission.csv', index=False)
+
 
     @staticmethod
     def df_info(this):
@@ -152,7 +179,7 @@ class TitanicModel(object):
         Master
         Mrs
         '''
-        title_mapping = {'Mr': 1, 'Miss': 2, 'Mrs': 3, 'Master': 4, 'Royal': 5, 'Rare': 6}
+        title_mapping = {'Mr': 1, 'Ms': 2, 'Mrs': 3, 'Master': 4, 'Royal': 5, 'Rare': 6}
         return title_mapping
 
 
@@ -182,12 +209,12 @@ class TitanicModel(object):
         labels = ['Unknown', 'Baby', 'Child', 'Teenager', 'Student', 'Young Adult', 'Adult', 'Senior']
         for these in train, test:
             # pd.cut() 을 사용하시오. 다른 곳은 고치지 말고 다음 두 줄만 코딩하시오
-            these['AgeGroup'] = pd.cut(these['AgeGroup'], bins, labels=labels, right=False)   # pd.cut() 을 사용
-            these['AgeGroup'] = these['AgeGroup'] = these['AgeGroup'].map(age_mapping)   # map() 을 사용
+            these['Age'] = pd.cut(these['Age'], bins=bins, labels=labels)   # pd.cut() 을 사용
+            these['AgeGroup'] = these['Age'].map(age_mapping)   # map() 을 사용
         return this
 
     @staticmethod
-    def sex_nominal(this) -> object: 
+    def sex_nominal(this) -> object:
         gender_mapping = {'male': 0, 'female': 1}
         for these in [this.train, this.test]:
             these['Gender'] = these['Sex'].map(gender_mapping)
@@ -208,4 +235,20 @@ class TitanicModel(object):
         this.train['FareBand'] = pd.qcut(this.train['Fare'], 4)
         # print(f'qcut 으로 bins 값 설정 {this.train["FareBand"].head()}')
         bins = [-1, 8, 15, 31, np.inf]
+        fare_mapping = {1, 2, 3, 4}
+        for these in [this.train, this.test]:
+            these['FareBand'] = these['Fare'].fillna(1)
+            these['FareBand'] = pd.qcut(these['FareBand'], 4, fare_mapping)
         return this
+
+    @staticmethod
+    def create_k_fold() -> object:
+        return KFold(n_splits=10, shuffle=True, random_state=0)
+
+    @staticmethod
+    def get_accuracy(this, k_fold):
+        score = cross_val_score(RandomForestClassifier(), this.train, this.label,
+                                cv=k_fold, n_jobs=1, scoring='accuracy')     #n_jobs는 몇번을 시험 치룰건지
+        return round(np.mean(score)*100, 2)     #라운드는반올림 뒤에 숫자 2는 소수점 2자리까지 라는뜻
+
+
